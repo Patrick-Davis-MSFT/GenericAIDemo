@@ -18,18 +18,18 @@ const Layout = () => {
                         <img src={openai} alt="Azure OpenAI" className={styles.headerLogo} />
                         <Add28Filled />
                         <img src={msft} alt="Azure OpenAI" className={styles.headerLogoMsft} />
-                        <h3 className={styles.headerTitle}>HEADER HERE</h3>
+                        <h3 className={styles.headerTitle}>US Courts Demo</h3>
                     </div>
                     <nav>
                         <ul className={styles.headerNavList}>
                             <li>
                                 <NavLink to="/" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
-                                    First Link
+                                    LLM Demo
                                 </NavLink>
                             </li>
                             <li className={styles.headerNavLeftMargin}>
                                 <NavLink to="/second" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
-                                Second Link
+                                Service Summarization
                                 </NavLink>
                             </li>
                             <li className={styles.headerNavLeftMargin}>

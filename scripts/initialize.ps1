@@ -37,9 +37,11 @@ Start-Process -FilePath $venvPythonPath -ArgumentList "-m pip install -r ./scrip
 Write-Host 'Setting kv policy for current user'
 $currUser = az ad signed-in-user show --query id
 
-az keyvault set-policy --name $env:AZURE_KEY_VAULT_NAME --object-id $currUser --secret-permissions get list set delete recover backup restore purge
-$tempCS = az keyvault secret show --name "AZURE-COSMOS-CONNECTION-STRING" --vault-name "kv-i25ipilok42la" --query value -o tsv
+#az keyvault set-policy --name $env:AZURE_KEY_VAULT_NAME --object-id $currUser --secret-permissions get list set delete
+$tempCS = az keyvault secret show --name "AZURE-COSMOS-CONNECTION-STRING" --vault-name $env:AZURE_KEY_VAULT_NAME --query value -o tsv
 [Environment]::SetEnvironmentVariable("AZURE_COSMOS_CONNECTION_STRING", $tempCS)
+
+
 Write-Host 'Running "uploadVerion.py" to specify the version in cosmosdb'
 $cwd = (Get-Location)
 # Todo: Fix auth for the user

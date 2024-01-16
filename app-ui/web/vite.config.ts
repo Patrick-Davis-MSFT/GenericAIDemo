@@ -27,7 +27,9 @@ export default defineConfig({
   },
   server: {
       proxy: {
-          "/about": {target: "http://127.0.0.1:5000", changeOrigin: true}
+        "/about": {target: "http://127.0.0.1:5000", changeOrigin: true},
+        "/getDeploymentInfo": {target: "http://127.0.0.1:5000", changeOrigin: true},
+        "/getFiles": {target: "http://127.0.0.1:5000", changeOrigin: true}
       }
   }
 });

@@ -30,6 +30,55 @@ var abbrs = loadJsonContent('./abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
 
+param AZURE_OPENAI_SERVICE string
+param AZURE_OPENAI_COMPLETION_DEPLOYMENT string
+param AZURE_OPENAI_DEPLOYMENT_MODEL string
+param AZURE_OPENAI_DEPLOYMENT_VERSION string 
+param AZURE_OPENAI_DEPLOYMENT_MAX_TOKENS int
+
+
+param AZURE_SEARCH_INDEX_NAME string = 'searchindex'
+
+param storeContainers array = [
+  {
+    name: 'htmldownload'
+    publicAccess: 'None'
+  }
+  {
+    name: 'procesed'
+    publicAccess: 'None'
+  }
+  {
+    name: 'upload'
+    publicAccess: 'None'
+  }
+  {
+    name: 'plaintext'
+    publicAccess: 'None'
+  }
+]
+
+module storage './core/storage/storage-account.bicep' = {
+  name: 'store${resourceToken}'
+  scope: rg
+  params: {
+    location: location
+    name: 'store${resourceToken}'
+    tags: tags
+    sku: {
+      name: 'Standard_LRS'
+    }
+    kind: 'StorageV2'
+    accessTier: 'Hot'
+    publicNetworkAccess: 'Enabled'
+    deleteRetentionPolicy: {
+      enabled: false
+    }
+    containers: storeContainers
+  }
+}
+
+
 // Organize resources in a resource group
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
@@ -54,9 +103,27 @@ module web './app/web.bicep' = {
       AZURE_COSMOS_ABOUT_COLLECTION: cosmos.outputs.aboutcollection
       AZURE_COSMOS_ALERT_COLLECTION: cosmos.outputs.alertcollection
       VITE_APPLICATIONINSIGHTS_CONNECTION_STRING: '@Microsoft.KeyVault(SecretUri=${kvAppIn.outputs.kvSecretId})'
+      AZURE_STORAGE_ACCOUNT: storage.name
+      AZURE_OPENAI_SERVICE: aoai.outputs.AZURE_OPENAI_SERVICE
+      AZURE_OPENAI_ENDPOINT: aoai.outputs.AZURE_OPENAI_ENDPOINT
+      AZURE_STORAGE_CONTAINER_HTMLDOWNLOAD: storeContainers[0].name
+      AZURE_STORAGE_CONTAINER_PROCESSED: storeContainers[1].name
+      AZURE_STORAGE_CONTAINER_UPLOAD: storeContainers[2].name
+      AZURE_STORAGE_CONTAINER_TEXT: storeContainers[3].name
     }
   }
 }
+
+module storageRoleWebApp './core/security/role.bicep' = {
+  name: 'storage-role-webApp'
+  scope: rg
+  params: {
+    principalId: web.outputs.SERVICE_WEB_IDENTITY_PRINCIPAL_ID
+    roleDefinitionId: '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+    principalType: 'ServicePrincipal'
+  }
+}
+
 
 
 // Give the API access to KeyVault
@@ -94,6 +161,88 @@ module appServicePlan './core/host/appserviceplan.bicep' = {
     sku: {
       name: 'B1'
     }
+  }
+}
+
+module pipeline './app/pipelines.bicep' = {
+  name: 'pipeline'
+  scope: rg
+  params: {
+    name: 'pipe${resourceToken}'
+    location: location
+    tags: tags
+    webAppName: web.outputs.SERVICE_WEB_NAME
+    webAppPlanName: appServicePlan.outputs.name
+    applicationInsightsName: monitoring.outputs.applicationInsightsName
+    cosmosCS: '@Microsoft.KeyVault(SecretUri=${cosmos.outputs.connectionStringKey})'
+    keyVaultName: keyVault.outputs.name
+    databaseName: cosmos.outputs.databaseName
+    endpoint: cosmos.outputs.endpoint
+    aboutcollection: cosmos.outputs.aboutcollection
+    alertcollection: cosmos.outputs.alertcollection
+    AZURE_OPENAI_SERVICE: aoai.outputs.AZURE_OPENAI_SERVICE
+    AZURE_OPENAI_ENDPOINT: aoai.outputs.AZURE_OPENAI_ENDPOINT
+    AZURE_OPENAI_COMPLETION_DEPLOYMENT: aoai.outputs.AZURE_OPENAI_COMPLETION_DEPLOYMENT
+    AZURE_OPENAI_DEPLOYMENT_MODEL: aoai.outputs.AZURE_OPENAI_DEPLOYMENT_MODEL
+    AZURE_OPENAI_DEPLOYMENT_MAX_TOKENS: AZURE_OPENAI_DEPLOYMENT_MAX_TOKENS
+    AZURE_SEARCH_NAME: search.outputs.AZURE_SEARCH_NAME
+    AZURE_SEARCH_INDEX_NAME: AZURE_SEARCH_INDEX_NAME
+    AZURE_STORAGE_ACCOUNT: storage.name
+    sbNamespace: 'sb-${resourceToken}'
+    queueName: 'htmlLoaded'
+    storeContainers: [
+      {
+        name: 'htmldownload'
+        publicAccess: 'None'
+      }
+      {
+        name: 'procesed'
+        publicAccess: 'None'
+      }
+      {
+        name: 'upload'
+        publicAccess: 'None'
+      }
+      {
+        name: 'text'
+        publicAccess: 'None'
+      }
+    ]
+  }
+}
+
+module search './app/search.bicep' = {
+  name: 'ai-search'
+  scope: rg
+  params: {
+    searchName: 'search-${resourceToken}'
+    tags: tags
+    location: location
+    keyVaultName: keyVault.outputs.name
+  }
+}
+
+module aoai 'app/aoai.bicep' = {
+  name: 'aoai-completion'
+  scope: rg
+  params:{
+  openAILocation: location
+  tags: tags
+  openAiServiceName: AZURE_OPENAI_SERVICE
+  openAICompletion: AZURE_OPENAI_COMPLETION_DEPLOYMENT
+  openAICompletionModel: AZURE_OPENAI_DEPLOYMENT_MODEL
+  openAICompletionVersion: AZURE_OPENAI_DEPLOYMENT_VERSION
+  openAIQuotaTokens: AZURE_OPENAI_DEPLOYMENT_MAX_TOKENS
+  }
+}
+
+module openAiRoleWebUser './core/security/role.bicep' = {
+  name: 'openai-role-user'
+  scope: rg
+  params: {
+    principalId: web.outputs.SERVICE_WEB_IDENTITY_PRINCIPAL_ID
+    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -151,3 +300,15 @@ output AZURE_KEY_VAULT_NAME string = keyVault.outputs.name
 output VITE_APPLICATIONINSIGHTS_CONNECTION_STRING_KEY string = substring(kvAppIn.outputs.kvSecretId, indexOf(kvAppIn.outputs.kvSecretId, 'secrets/')+8)
 output VITE_WEB_BASE_URL string = web.outputs.SERVICE_WEB_URI
 output REACT_APP_WEB_BASE_URL string = web.outputs.SERVICE_WEB_URI
+
+// Storage 
+output AZURE_STORAGE_ACCOUNT string = storage.name
+output AZURE_STORAGE_CONTAINER_HTMLDOWNLOAD string = storeContainers[0].name
+output AZURE_STORAGE_CONTAINER_PROCESSED string = storeContainers[1].name
+output AZURE_STORAGE_CONTAINER_UPLOAD string = storeContainers[2].name
+output AZURE_STORAGE_CONTAINER_TEXT string = storeContainers[3].name
+
+
+//AOAI 
+output AZURE_OPENAI_SERVICE string = aoai.outputs.AZURE_OPENAI_SERVICE
+output AZURE_OPENAI_ENDPOINT string = aoai.outputs.AZURE_OPENAI_ENDPOINT

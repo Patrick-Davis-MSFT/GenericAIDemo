@@ -70,7 +70,6 @@ Write-Host ""
 Write-Host "Starting web"
 Write-Host ""
 Start-Process npm -ArgumentList "run dev"
-Start-Process http://localhost:5173/
 
 Set-Location ../api
 Start-Process -FilePath $venvPythonPath -ArgumentList "-m flask run --port=5000 --reload --debug" -Wait -NoNewWindow

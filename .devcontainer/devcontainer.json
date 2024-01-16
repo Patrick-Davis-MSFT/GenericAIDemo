@@ -28,8 +28,18 @@
     },
     "forwardPorts": [
         3000,
-        3100
+        3100,
+        5174,
+        5173
     ],
+    "containerEnv": {
+        "WATCHPACK_POLLING": "true",
+        "CHOKIDAR_USEPOLLING": "true" 
+    },
+    "remoteEnv": {
+        "WATCHPACK_POLLING": "true",
+        "CHOKIDAR_USEPOLLING": "true" 
+    },
     "postCreateCommand": "",
     "remoteUser": "vscode",
     "hostRequirements": {

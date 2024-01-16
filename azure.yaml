@@ -23,7 +23,7 @@ services:
 hooks:
     postprovision:
       windows:
+        run: ./scripts/initialize.ps1;
         shell: pwsh
-        run: ./scripts/initialize.ps1
         interactive: true
         continueOnError: false
