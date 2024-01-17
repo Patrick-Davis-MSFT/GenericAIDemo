@@ -1,3 +1,4 @@
+import json
 import os
 import io
 import mimetypes
@@ -13,6 +14,7 @@ from io import BytesIO
 from flask import Flask, request, jsonify, send_file, abort, Response
 from azure.identity import DefaultAzureCredential
 from approaches.versioncheck import versionCheck
+from approaches.sendaoai import sendaoai
 from azure.mgmt.cognitiveservices import CognitiveServicesManagementClient
 from azure.storage.blob import BlobServiceClient
 
@@ -32,6 +34,7 @@ AZURE_SUBSCRIPTION_ID = os.environ.get("AZURE_SUBSCRIPTION_ID", "") or "AZURE_SU
 AZURE_STORAGE_ACCOUNT = os.environ.get("AZURE_STORAGE_ACCOUNT", "") or "AZURE_STORAGE_ACCOUNT"
 AZURE_STORAGE_CONTAINER_UPLOAD = os.environ.get("AZURE_STORAGE_CONTAINER_UPLOAD", "upload") or "AZURE_STORAGE_CONTAINER_UPLOAD"
 AZURE_STORAGE_CONTAINER_PROCESSED = os.environ.get("AZURE_STORAGE_CONTAINER_PROCESSED", "processed") or "AZURE_STORAGE_CONTAINER_PROCESSED"
+AZURE_STORAGE_CONTAINER_TEXT = os.environ.get("AZURE_STORAGE_CONTAINER_TEXT", "text") or "AZURE_STORAGE_CONTAINER_TEXT"
 # Use the current user identity to authenticate with Azure OpenAI, Cognitive Search and Blob Storage (no secrets needed, 
 # just use 'az login' locally, and managed identity when deployed on Azure). If you need to use keys, use separate AzureKeyCredential instances with the 
 # keys for each service
@@ -42,12 +45,19 @@ azure_credential = DefaultAzureCredential(exclude_shared_token_cache_credential 
 
 
 # Approach to get 
-indexFiles_approaches = {
+aoai_approaches = {
     "ver": versionCheck(AZURE_COSMOS_ENDPOINT,
                             AZURE_COSMOS_DATABASE_NAME, 
                             AZURE_COSMOS_ABOUT_COLLECTION,
-                            AZURE_COSMOS_CONNECTION_STRING)
+                            AZURE_COSMOS_CONNECTION_STRING),
+    "sendaoai": sendaoai(azure_credential,
+                            AZURE_STORAGE_CONTAINER_PROCESSED,
+                            AZURE_STORAGE_CONTAINER_TEXT,
+                            AZURE_STORAGE_ACCOUNT,
+                            AZURE_OPENAI_ENDPOINT)
 }
+
+
 
 
 app = Flask(__name__)
@@ -61,7 +71,7 @@ def static_file(path):
 @app.route("/about")
 def about():
     try:
-        impl = indexFiles_approaches.get("ver")
+        impl = aoai_approaches.get("ver")
         r = impl.run()
         id = r["_id"]
         r["_id"] = str(id)
@@ -82,7 +92,9 @@ def getDeploymentInfo():
             account_name=AZURE_OPENAI_SERVICE,
         )
         retvalue = []
+        
         for item in r:
+            #logging.exception(item.as_dict())
             item = {"id": item.id, "name": item.name, "model": item.properties.model.name, "version":item.properties.model.version}
             retvalue.append(item)
         
@@ -107,4 +119,42 @@ def getFiles():
         return jsonify(res)
     except Exception as e:
         logging.exception("Exception in /getFiles")
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/getAOAIResponse", methods=["POST"])
+def getAOAIResponse():
+    try:
+        # Get the request body
+        req = request.get_json()
+        if not req:
+            return abort(400, "No request body provided")
+
+        # Get the approach
+        approach = "sendaoai"
+        if not approach:
+            return abort(400, "No approach provided")
+
+        # Get the approach implementation
+        impl = aoai_approaches.get(approach)
+        if not impl:
+            return abort(400, "Unknown approach")
+
+        # Run the approach
+        inMsg = req.get("messages")
+        #logging.exception(inMsg)
+        messages = []
+        for msg in inMsg:
+            #logging.exception(msg['content'])
+            messages.append(msg)
+        r = impl.run(fileName=req.get("fileName"), 
+                     deploymentName=req.get("deploymentName"), 
+                     messages=inMsg, 
+                     maxLength=req.get("docLength"),
+                     temperature=req.get("temperature"),
+                     max_tokens=req.get("max_tokens"),
+                     top_p=req.get("topP"))
+        logging.exception(r)
+        return r
+    except Exception as e:
+        logging.exception("Exception in /runPrompt")
         return jsonify({"error": str(e)}), 500

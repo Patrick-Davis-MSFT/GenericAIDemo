@@ -65,7 +65,7 @@ const promptList: promptArray = [
       {
         role: "user",
         content:
-          "Draft an executive summary of the Blueprint for an AI Bill of Rights. Provide enough detail in the summary so I am aware of any important points that impact me as a technologist who helps the government adopt AI. Return the summary as a markdown report.",
+          "Draft an executive summary for the above state of the union Provide enough detail in the summary so I am aware of any important points that impact me as a us citizen who helps the government implement policy. Return the summary as a markdown report.",
       },
     ],
   },
@@ -144,7 +144,6 @@ export const PromptDropDown: React.FC<PromptDropdownProps> = ({
     let tmpSel = selectedMessages;
     tmpSel.forEach((i) => {
       if (i.role === elementKey) {
-        console.log(newValue);
         i.content = newValue || "";
       }
     });
@@ -180,7 +179,7 @@ export const PromptDropDown: React.FC<PromptDropdownProps> = ({
               data-key="system"
               value={sysMsg}
               multiline
-              rows={4}
+              rows={10}
               onChange={updateMessage}
             />
           </StackItem>

@@ -15,7 +15,8 @@ export async function getFiles(): Promise<FileListResponse> {
     return await response.json();
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function getAOAIResponse(fileName: string, deploymentName: string, messages: messages): Promise<any> {
+export async function getAOAIResponse(fileName: string, deploymentName: string, messages: messages, docLength: number, maxTokens:number, temperature:number, topP:number): Promise<any> {
+    console.log("getAOAIResponse");
     const response = await fetch('/getAOAIResponse', {
         method: 'POST',
         headers: {
@@ -24,7 +25,11 @@ export async function getAOAIResponse(fileName: string, deploymentName: string, 
             body: JSON.stringify({
                 fileName: fileName,
                 deploymentName: deploymentName,
-                messages: messages
+                messages: messages,
+                docLength: docLength,
+                maxTokens: maxTokens,
+                temperature: temperature,
+                topP: topP
                 })
         });
     return await response.json();
