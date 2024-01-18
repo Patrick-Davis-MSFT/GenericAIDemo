@@ -34,3 +34,19 @@ export async function getAOAIResponse(fileName: string, deploymentName: string, 
         });
     return await response.json();
 }
+
+export async function getSummary (selectedFile: string, docLength: number, sentenceCount:number, useAbstractive: boolean) {
+    const response = await fetch('/getSummary', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                fileName: selectedFile,
+                docLength: docLength,
+                sentenceCount: sentenceCount,
+                useAbstractive: useAbstractive
+                })
+        });
+    return await response.json();
+}

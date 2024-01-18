@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as react from 'react'
 
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
@@ -12,6 +13,7 @@ import './App.css'
 import Layout from './layout/Layout'
 import BlankPage from './pages/BlankPage';
 import About from './pages/About/About';
+import Summarize from './pages/Summarize/Summarize';
 import NoPage from './pages/NoPage';
 
 const AppInsight_CS = import.meta.env.VITE_APPLICATIONINSIGHTS_CONNECTION_STRING
@@ -41,6 +43,7 @@ function App() {
         <Route path="/" element={<Layout />}>
             <Route index element={<BlankPage />} />
             <Route path="/about" element={<About />} />
+            <Route path="/summarize" element={<Summarize />} />
             <Route path="*" element={<NoPage />} />
         </Route>
     </Routes>

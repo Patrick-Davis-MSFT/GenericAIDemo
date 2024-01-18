@@ -37,6 +37,7 @@ param AZURE_OPENAI_DEPLOYMENT_VERSION string
 param AZURE_OPENAI_DEPLOYMENT_MAX_TOKENS int
 
 
+
 param AZURE_SEARCH_INDEX_NAME string = 'searchindex'
 
 param storeContainers array = [
@@ -110,6 +111,8 @@ module web './app/web.bicep' = {
       AZURE_STORAGE_CONTAINER_PROCESSED: storeContainers[1].name
       AZURE_STORAGE_CONTAINER_UPLOAD: storeContainers[2].name
       AZURE_STORAGE_CONTAINER_TEXT: storeContainers[3].name
+      AZURE_LANGUAGE_SERVICE_NAME: aoai.outputs.AZURE_LANGUAGE_SERVICE_NAME
+      AZURE_LANGUAGE_SERVICE_ENDPOINT: aoai.outputs.AZURE_LANGUAGE_SERVICE_ENDPOINT
     }
   }
 }
@@ -233,6 +236,8 @@ module aoai 'app/aoai.bicep' = {
   openAICompletionModel: AZURE_OPENAI_DEPLOYMENT_MODEL
   openAICompletionVersion: AZURE_OPENAI_DEPLOYMENT_VERSION
   openAIQuotaTokens: AZURE_OPENAI_DEPLOYMENT_MAX_TOKENS
+  languageServiceName: '${AZURE_OPENAI_SERVICE}-lang-${resourceToken}'
+  languageServiceLocation: 'eastus'
   }
 }
 
@@ -242,6 +247,16 @@ module openAiRoleWebUser './core/security/role.bicep' = {
   params: {
     principalId: web.outputs.SERVICE_WEB_IDENTITY_PRINCIPAL_ID
     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
+    principalType: 'ServicePrincipal'
+  }
+}
+
+module AiRoleWebUser './core/security/role.bicep' = {
+  name: 'ai-role-user'
+  scope: rg
+  params: {
+    principalId: web.outputs.SERVICE_WEB_IDENTITY_PRINCIPAL_ID
+    roleDefinitionId: 'a97b65f3-24c7-4388-baec-2e87135dc908'
     principalType: 'ServicePrincipal'
   }
 }
@@ -312,3 +327,5 @@ output AZURE_STORAGE_CONTAINER_TEXT string = storeContainers[3].name
 //AOAI 
 output AZURE_OPENAI_SERVICE string = aoai.outputs.AZURE_OPENAI_SERVICE
 output AZURE_OPENAI_ENDPOINT string = aoai.outputs.AZURE_OPENAI_ENDPOINT
+output AZURE_LANGUAGE_SERVICE_NAME string = aoai.outputs.AZURE_LANGUAGE_SERVICE_NAME
+output AZURE_LANGUAGE_SERVICE_ENDPOINT string = aoai.outputs.AZURE_LANGUAGE_SERVICE_ENDPOINT

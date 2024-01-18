@@ -15,6 +15,7 @@ from flask import Flask, request, jsonify, send_file, abort, Response
 from azure.identity import DefaultAzureCredential
 from approaches.versioncheck import versionCheck
 from approaches.sendaoai import sendaoai
+from approaches.summary import summary
 from azure.mgmt.cognitiveservices import CognitiveServicesManagementClient
 from azure.storage.blob import BlobServiceClient
 
@@ -35,6 +36,7 @@ AZURE_STORAGE_ACCOUNT = os.environ.get("AZURE_STORAGE_ACCOUNT", "") or "AZURE_ST
 AZURE_STORAGE_CONTAINER_UPLOAD = os.environ.get("AZURE_STORAGE_CONTAINER_UPLOAD", "upload") or "AZURE_STORAGE_CONTAINER_UPLOAD"
 AZURE_STORAGE_CONTAINER_PROCESSED = os.environ.get("AZURE_STORAGE_CONTAINER_PROCESSED", "processed") or "AZURE_STORAGE_CONTAINER_PROCESSED"
 AZURE_STORAGE_CONTAINER_TEXT = os.environ.get("AZURE_STORAGE_CONTAINER_TEXT", "text") or "AZURE_STORAGE_CONTAINER_TEXT"
+AZURE_LANGUAGE_SERVICE_ENDPOINT = os.environ.get("AZURE_LANGUAGE_SERVICE_ENDPOINT", "") or "AZURE_LANGUAGE_SERVICE_ENDPOINT"
 # Use the current user identity to authenticate with Azure OpenAI, Cognitive Search and Blob Storage (no secrets needed, 
 # just use 'az login' locally, and managed identity when deployed on Azure). If you need to use keys, use separate AzureKeyCredential instances with the 
 # keys for each service
@@ -54,7 +56,12 @@ aoai_approaches = {
                             AZURE_STORAGE_CONTAINER_PROCESSED,
                             AZURE_STORAGE_CONTAINER_TEXT,
                             AZURE_STORAGE_ACCOUNT,
-                            AZURE_OPENAI_ENDPOINT)
+                            AZURE_OPENAI_ENDPOINT),
+    "summary": summary(azure_credential,
+                            AZURE_STORAGE_CONTAINER_PROCESSED,
+                            AZURE_STORAGE_CONTAINER_TEXT,
+                            AZURE_STORAGE_ACCOUNT,
+                            AZURE_LANGUAGE_SERVICE_ENDPOINT)
 }
 
 
@@ -153,8 +160,34 @@ def getAOAIResponse():
                      temperature=req.get("temperature"),
                      max_tokens=req.get("max_tokens"),
                      top_p=req.get("topP"))
-        logging.exception(r)
+        #logging.info(r)
         return r
+    except Exception as e:
+        logging.exception("Exception in /runPrompt")
+        return jsonify({"error": str(e)}), 500
+    
+@app.route("/getSummary", methods=["POST"])
+def getSummary():
+    try:
+        # Get the request body
+        req = request.get_json()
+        if not req:
+            return abort(400, "No request body provided")
+        approach = "summary"
+        if not approach:
+            return abort(400, "No approach provided")
+
+        # Get the approach implementation
+        impl = aoai_approaches.get(approach)
+        if not impl:
+            return abort(400, "Unknown approach")
+        
+        r = impl.run(fileName=req.get("fileName"), 
+                     docLength=req.get("docLength"), 
+                     sentenceCount=req.get("sentenceCount"),
+                     useAbstractive=req.get("useAbstractive"))
+        logging.exception(r)
+        return jsonify(r)
     except Exception as e:
         logging.exception("Exception in /runPrompt")
         return jsonify({"error": str(e)}), 500

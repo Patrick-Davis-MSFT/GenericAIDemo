@@ -61,8 +61,6 @@ export const AOAIResults: React.FC<ResProps> = ({ res }) => {
       <Text variant="mediumPlus">Choices</Text>
       {res.choices.map((choice, index) => (
         <Stack key={index} tokens={{ childrenGap: 5 }}>
-          <Text>Finish Reason: {choice.finish_reason}</Text>
-          <Text>Index: {choice.index}</Text>
           <Text style={{ fontWeight: "bold", color: "darkblue" }}>
             Message Content Below:
           </Text>
@@ -77,7 +75,8 @@ export const AOAIResults: React.FC<ResProps> = ({ res }) => {
           >
             <ReactMarkdown>{choice.message.content}</ReactMarkdown>
           </div>
-
+          <Text>Finish Reason: {choice.finish_reason}</Text>
+          <Text>Index: {choice.index}</Text>
           <Text>Message Role: {choice.message.role}</Text>
           <Text>
             Hate: Filtered:{" "}

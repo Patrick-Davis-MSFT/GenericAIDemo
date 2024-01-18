@@ -13,7 +13,7 @@ import { ModelDropDown } from "../components/ModelDropDown/ModelDropDown";
 import React from "react";
 import { FileDropDown } from "../components/FileDropDown/FileDropDown";
 import { PromptDropDown } from "../components/PromptDropDown/PromptDropDown";
-import { DefaultButton, PrimaryButton, Slider, Stack, Text } from "@fluentui/react";
+import { DefaultButton, PrimaryButton, Slider, Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
 import { AOAIResults } from "../components/AOAIResult/AOAIResult";
 
 export default function blankPage() {
@@ -29,6 +29,7 @@ export default function blankPage() {
   const [maxTokens, setMaxTokens] = useState<number>(4000);
   const [temperature, setTemperature] = useState<number>(0.7);
   const [topP, setTopP] = useState<number>(0);
+  const [disableRunIt, setDisableRunIt] = useState<boolean>(false);
   useEffect(() => {
     if (!deploymentListResponse) {
       async function fetchData() {
@@ -54,6 +55,7 @@ export default function blankPage() {
   const runAOAI = () => {
     async function fetchData() {
       if (selectedFile && selectedDeployment && selMessages) {
+        setDisableRunIt(true);
         const res = await getAOAIResponse(
           selectedFile,
           selectedDeployment,
@@ -69,6 +71,7 @@ export default function blankPage() {
       }
       else{
         setAoaiResult("Please select a file, model, and prompt");
+        setDisableRunIt(false);
       }
     }
     fetchData();
@@ -130,7 +133,7 @@ export default function blankPage() {
       />
     </Stack.Item>
     <Stack.Item>
-        <Stack tokens={{ childrenGap: 10, padding: 25 }}>
+        <Stack tokens={{ childrenGap: 10, padding: 5 }}>
             <Stack.Item>
                 <h2 style={{ color: "black" }}>4) AOAI Parameters</h2>
                 </Stack.Item>
@@ -155,8 +158,9 @@ export default function blankPage() {
       <Stack.Item>
       <h2 style={{ color: "black" }}>Result: </h2>
       {aoaiResult ? <AOAIResults res={aoaiResult}/> : <></>}
-      { aoaiResult ? <></> :<PrimaryButton text="Run it!" onClick={runAOAI} />}
-      { aoaiResult ? <DefaultButton text="Clear" onClick={() => setAoaiResult(undefined)} /> : <></>}
+      { !aoaiResult && disableRunIt ? <Spinner size={SpinnerSize.large} /> : <></> }
+      { aoaiResult ? <></> :<PrimaryButton disabled={disableRunIt} text="Run it!" onClick={runAOAI} />}
+      { aoaiResult ? <DefaultButton text="Clear" onClick={() => {setAoaiResult(undefined); setDisableRunIt(false);}} /> : <></>}
       </Stack.Item>
       </Stack>
     </div>
