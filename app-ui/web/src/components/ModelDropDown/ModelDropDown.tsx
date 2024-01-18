@@ -32,7 +32,7 @@ export const ModelDropDown: React.FC<ModelDropdownProps> = ({ aoaiModel, setSelD
       placeholder="Select an option"
       label="Azure OpenAI Models"
       options={modelOpt}
-      onChange={(e, option) => ddSelectDeployment(option)}
+      onChange={(_e, option) => ddSelectDeployment(option)}
     />
     )
 }

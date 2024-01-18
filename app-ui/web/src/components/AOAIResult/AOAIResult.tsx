@@ -52,12 +52,6 @@ export const AOAIResults: React.FC<ResProps> = ({ res }) => {
       <Text>Model: {res.model}</Text>
       <Text>Object: {res.object}</Text>
       <Text>System Fingerprint: {res.system_fingerprint}</Text>
-      <Stack tokens={{ childrenGap: 5 }}>
-        <Text variant="mediumPlus">Usage</Text>
-        <Text>Completion Tokens: {res.usage.completion_tokens}</Text>
-        <Text>Prompt Tokens: {res.usage.prompt_tokens}</Text>
-        <Text>Total Tokens: {res.usage.total_tokens}</Text>
-      </Stack>
       <Text variant="mediumPlus">Choices</Text>
       {res.choices.map((choice, index) => (
         <Stack key={index} tokens={{ childrenGap: 5 }}>
@@ -150,6 +144,12 @@ export const AOAIResults: React.FC<ResProps> = ({ res }) => {
           </Text>
         </Stack>
       ))}
+      <Stack tokens={{ childrenGap: 5 }}>
+        <Text variant="mediumPlus">Usage</Text>
+        <Text>Completion Tokens: {res.usage.completion_tokens}</Text>
+        <Text>Prompt Tokens: {res.usage.prompt_tokens}</Text>
+        <Text>Total Tokens: {res.usage.total_tokens}</Text>
+      </Stack>
     </Stack>
   );
 };

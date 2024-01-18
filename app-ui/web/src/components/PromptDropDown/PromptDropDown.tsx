@@ -168,7 +168,7 @@ export const PromptDropDown: React.FC<PromptDropdownProps> = ({
           placeholder="Select a Prompt"
           label="Prompt Use Cases"
           options={promptOpt}
-          onChange={(e, option) => ddSelectPrompt(option)}
+          onChange={(_e, option) => ddSelectPrompt(option)}
         />
       </StackItem>
       {selectedMessages && selectedMessages.length > 0 ? (

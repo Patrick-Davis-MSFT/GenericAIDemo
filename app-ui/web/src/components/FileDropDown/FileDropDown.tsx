@@ -32,7 +32,7 @@ export const FileDropDown: React.FC<FileDropdownProps> = ({ fileList, setFile })
       placeholder="Select an option"
       label="Avaiable Files"
       options={fileOpt}
-      onChange={(e, option) => ddSelectFile(option)}
+      onChange={(_e, option) => ddSelectFile(option)}
     />
     )
 }

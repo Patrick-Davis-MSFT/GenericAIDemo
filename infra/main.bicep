@@ -113,6 +113,8 @@ module web './app/web.bicep' = {
       AZURE_STORAGE_CONTAINER_TEXT: storeContainers[3].name
       AZURE_LANGUAGE_SERVICE_NAME: aoai.outputs.AZURE_LANGUAGE_SERVICE_NAME
       AZURE_LANGUAGE_SERVICE_ENDPOINT: aoai.outputs.AZURE_LANGUAGE_SERVICE_ENDPOINT
+      AZURE_RESOURCE_GROUP: rg.name
+      AZURE_SUBSCRIPTION_ID: subscription().subscriptionId
     }
   }
 }
