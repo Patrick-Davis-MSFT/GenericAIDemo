@@ -28,12 +28,12 @@ const promptList: promptArray = [
       {
         role: "system",
         content:
-          "You are a historian skilled in writing comprehensive, informative reports in any language.",
+          "You are a court researcher skilled in writing comprehensive, informative reports in any language based on the following document.\n\n{{doc}}",
       },
       {
         role: "user",
         content:
-          "Return a professional looking report in markdown titled, 'Fifty-five from five'. The report contains the first 55 words from five famous speeches. Include information about each speech: e.g. What were the conditions like? Why was the speech made? Include things like where, when, why, and who. Then include a summary of whether or not the speech was impactful and why.",
+          "Return a professional looking report in markdown with an appropriate title. The report contains the main points from the provided document. Include information about main topics: e.g. What is the reasoning? Why is this topic important? Include things like where, when, why, and who. Then include a summary of whether or not the topic and reasoning was impactful and why.",
       },
     ],
   },
@@ -65,7 +65,7 @@ const promptList: promptArray = [
       {
         role: "user",
         content:
-          "Draft an executive summary for the above state of the union Provide enough detail in the summary so I am aware of any important points that impact me as a us citizen who helps the government implement policy. Return the summary as a markdown report.",
+          "Draft an executive summary for the above court exhibit. Provide enough detail in the summary so I am aware of any important points that impact me as a court researcher who helps the understand the exhibit. Return the summary as a markdown report.",
       },
     ],
   },
@@ -76,12 +76,12 @@ const promptList: promptArray = [
       {
         role: "system",
         content:
-          "You are a helpful AI assistant that extracts content from the LEASE below and returns a JSON document with attribute and value pairs based on the user's request.\n\nLease:\n\n{{doc}}",
+          "You are a helpful AI assistant that extracts content from the document below and returns a JSON document with attribute and value pairs based on the user's request for later datamining processes.\n\ndocument:\n\n{{doc}}",
       },
       {
         role: "user",
         content:
-          "From the lease return a JSON object containing:\n\nLessor, Lessee, Property Address, Property Description, Net Size of Property, Net Size of Property Units, Gross Size of Property, Gross Size of Property Units, Contract Start Date, Lease Start Date, Lease End Date, Lease Term (include the units), Monthly Lease Amount (include currency), Payment Frequency, Payment Address.\n\nFormat dates as YYYY-MM-DD.",
+          "From the document return a JSON object containing relevant properties for example:\n\ncase numbers, bill numbers, impacted agencies, people, places, things, quotes, funding amounts, and other important properties needed for data mining.\n\nFormat dates as YYYY-MM-DD.",
       },
     ],
   },
