@@ -28,7 +28,7 @@ const promptList: promptArray = [
       {
         role: "system",
         content:
-          "You are a court researcher skilled in writing comprehensive, informative reports in any language based on the following document.\n\n{{doc}}",
+          "You are a policy researcher skilled in writing comprehensive, informative reports in any language based on the following document.\n\n{{doc}}",
       },
       {
         role: "user",
@@ -65,7 +65,7 @@ const promptList: promptArray = [
       {
         role: "user",
         content:
-          "Draft an executive summary for the above court exhibit. Provide enough detail in the summary so I am aware of any important points that impact me as a court researcher who helps the understand the exhibit. Return the summary as a markdown report.",
+          "Draft an executive summary for the above State of the Union. Provide enough detail in the summary so I am aware of any important points that impact me as a policy researcher who helps the understand the exhibit. Return the summary as a markdown report.",
       },
     ],
   },
@@ -76,12 +76,12 @@ const promptList: promptArray = [
       {
         role: "system",
         content:
-          "You are a helpful AI assistant that extracts content from the document below and returns a JSON document with attribute and value pairs based on the user's request for later datamining processes.\n\ndocument:\n\n{{doc}}",
+          "You are a helpful AI assistant that extracts content from the document below and returns a JSON document with attribute and value pairs based on the user's request for later data mining processes.\n\ndocument:\n\n{{doc}}",
       },
       {
         role: "user",
         content:
-          "From the document return a JSON object containing relevant properties for example:\n\ncase numbers, bill numbers, impacted agencies, people, places, things, quotes, funding amounts, and other important properties needed for data mining.\n\nFormat dates as YYYY-MM-DD.",
+          "From the document return a JSON object containing relevant properties for example:\n\ntopic, government and non-government agencies, impacted agencies, people, places, things, quotes, funding amounts, and other important properties needed for data mining.\n\nFormat dates as YYYY-MM-DD.",
       },
     ],
   },

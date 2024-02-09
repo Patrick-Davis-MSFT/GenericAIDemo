@@ -31,6 +31,7 @@ AZURE_OPENAI_SERVICE = os.environ.get("AZURE_OPENAI_SERVICE", "") or "AZURE_OPEN
 
 AZURE_RESOURCE_GROUP = os.environ.get("AZURE_RESOURCE_GROUP", "") or "AZURE_RESOURCE_GROUP"
 AZURE_SUBSCRIPTION_ID = os.environ.get("AZURE_SUBSCRIPTION_ID", "") or "AZURE_SUBSCRIPTION_ID"
+AZURE_OPENAI_RESOURCE_GROUP = os.environ.get("AZURE_OPENAI_RESOURCE_GROUP", "") or "AZURE_OPENAI_RESOURCE_GROUP"
 
 AZURE_STORAGE_ACCOUNT = os.environ.get("AZURE_STORAGE_ACCOUNT", "") or "AZURE_STORAGE_ACCOUNT"
 AZURE_STORAGE_CONTAINER_UPLOAD = os.environ.get("AZURE_STORAGE_CONTAINER_UPLOAD", "upload") or "AZURE_STORAGE_CONTAINER_UPLOAD"
@@ -95,7 +96,7 @@ def getDeploymentInfo():
             subscription_id=AZURE_SUBSCRIPTION_ID,
         )
         r = client.deployments.list(
-            resource_group_name=AZURE_RESOURCE_GROUP,
+            resource_group_name=AZURE_OPENAI_RESOURCE_GROUP,
             account_name=AZURE_OPENAI_SERVICE,
         )
         retvalue = []

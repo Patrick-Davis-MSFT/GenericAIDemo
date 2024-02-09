@@ -22,7 +22,7 @@ param keyVaultName string = ''
 param logAnalyticsName string = ''
 param resourceGroupName string = ''
 param webServiceName string = ''
-
+param azureOpenAIResourceGroup string
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
@@ -113,6 +113,7 @@ module web './app/web.bicep' = {
       AZURE_STORAGE_CONTAINER_TEXT: storeContainers[3].name
       AZURE_LANGUAGE_SERVICE_NAME: aoai.outputs.AZURE_LANGUAGE_SERVICE_NAME
       AZURE_LANGUAGE_SERVICE_ENDPOINT: aoai.outputs.AZURE_LANGUAGE_SERVICE_ENDPOINT
+      AZURE_OPENAI_RESOURCE_GROUP: azureOpenAIResourceGroup
       AZURE_RESOURCE_GROUP: rg.name
       AZURE_SUBSCRIPTION_ID: subscription().subscriptionId
     }
@@ -193,6 +194,7 @@ module pipeline './app/pipelines.bicep' = {
     AZURE_SEARCH_NAME: search.outputs.AZURE_SEARCH_NAME
     AZURE_SEARCH_INDEX_NAME: AZURE_SEARCH_INDEX_NAME
     AZURE_STORAGE_ACCOUNT: storage.name
+    AZURE_OPENAI_RESOURCE_GROUP: azureOpenAIResourceGroup
     sbNamespace: 'sb-${resourceToken}'
     queueName: 'htmlLoaded'
     storeContainers: [
@@ -331,3 +333,4 @@ output AZURE_OPENAI_SERVICE string = aoai.outputs.AZURE_OPENAI_SERVICE
 output AZURE_OPENAI_ENDPOINT string = aoai.outputs.AZURE_OPENAI_ENDPOINT
 output AZURE_LANGUAGE_SERVICE_NAME string = aoai.outputs.AZURE_LANGUAGE_SERVICE_NAME
 output AZURE_LANGUAGE_SERVICE_ENDPOINT string = aoai.outputs.AZURE_LANGUAGE_SERVICE_ENDPOINT
+output AZURE_OPENAI_RESOURCE_GROUP string = azureOpenAIResourceGroup
