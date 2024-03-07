@@ -87,17 +87,51 @@ def about():
     except Exception as e:
         logging.exception("Exception in /about")
         return jsonify({"error": str(e)}), 500
-
-@app.route("/getDeploymentInfo")
-def getDeploymentInfo():
+    
+@app.route("/getAOAIAccounts")
+def aoaiAccounts():
     try:
         client = CognitiveServicesManagementClient(
             credential=DefaultAzureCredential(),
             subscription_id=AZURE_SUBSCRIPTION_ID,
         )
+        r = client.accounts.list()
+        retvalue = []
+        
+        for item in r:
+            #logging.exception(item.as_dict())
+            if item.kind == "OpenAI":
+                item = {"id": item.id, "name": item.name, "kind": item.kind, "sku": item.sku.name}
+                retvalue.append(item)
+        
+        return jsonify(retvalue)
+    except Exception as e:
+        logging.exception("Exception in /aoaiAccounts")
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/getDeploymentInfo", methods=["GET","POST"])
+def getDeploymentInfo():
+    try:
+        tmpAOAIRg = AZURE_OPENAI_RESOURCE_GROUP
+        tmpAOAIService = AZURE_OPENAI_SERVICE
+        
+        try:
+            req = request.get_json()
+            if not req:
+                a=1 #do nothing
+            else:
+                tmpAOAIRg = req.get("resource_group_name")
+                tmpAOAIService = req.get("account_name")
+        except:
+            logging.info("No request body provided. Using Defaults")
+
+        client = CognitiveServicesManagementClient(
+            credential=DefaultAzureCredential(),
+            subscription_id=AZURE_SUBSCRIPTION_ID,
+        )
         r = client.deployments.list(
-            resource_group_name=AZURE_OPENAI_RESOURCE_GROUP,
-            account_name=AZURE_OPENAI_SERVICE,
+            resource_group_name=tmpAOAIRg,
+            account_name=tmpAOAIService,
         )
         retvalue = []
         

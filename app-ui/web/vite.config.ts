@@ -31,7 +31,8 @@ export default defineConfig({
         "/getDeploymentInfo": {target: "http://127.0.0.1:5000", changeOrigin: true},
         "/getFiles": {target: "http://127.0.0.1:5000", changeOrigin: true},
         "/getAOAIResponse": {target: "http://127.0.0.1:5000", changeOrigin: true},
-        "/getSummary": {target: "http://127.0.0.1:5000", changeOrigin: true}
+        "/getSummary": {target: "http://127.0.0.1:5000", changeOrigin: true},
+        "/getAOAIAccounts": {target: "http://127.0.0.1:5000", changeOrigin: true}
       }
   }
 });

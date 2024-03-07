@@ -21,6 +21,22 @@ export type FileListResponse = [
     }
 ]
 
+export type AOAIListResponse = [
+    {
+        "id": "string",
+        "name": "string",
+        "kind": "string",
+        "sku": "string"
+    }
+]
+
+export type AOAISetting = {
+    "id": "string",
+    "name": "string",
+    "kind": "string",
+    "sku": "string"
+}
+
 export type message = 
     {
         "role": string,

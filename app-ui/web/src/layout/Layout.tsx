@@ -33,8 +33,8 @@ const Layout = () => {
                                 </NavLink>
                             </li>
                             <li className={styles.headerNavLeftMargin}>
-                                <NavLink to="/faces" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
-                                Faces Service
+                                <NavLink to="/promptflow" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
+                                Prompt Flow
                                 </NavLink>
                             </li>
                             <li className={styles.headerNavLeftMargin}>

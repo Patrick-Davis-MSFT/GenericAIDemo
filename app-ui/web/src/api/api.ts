@@ -1,4 +1,4 @@
-import {About, DeploymentListResponse, FileListResponse, messages } from './models';
+import {AOAIListResponse, About, DeploymentListResponse, FileListResponse, messages } from './models';
 
 export async function getAbout(): Promise<About> {
     const response = await fetch('/about');
@@ -10,8 +10,26 @@ export async function getDeployments(): Promise<DeploymentListResponse> {
     return await response.json();
 }
 
+export async function getDeploymentsWService(serviceRg: string, serviceName: string): Promise<DeploymentListResponse> {
+    const response = await fetch('/getDeploymentInfo', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+            },
+        body: JSON.stringify({
+            resource_group_name: serviceRg,
+            account_name: serviceName
+        })
+    });
+    return await response.json();
+}
+
 export async function getFiles(): Promise<FileListResponse> {
     const response = await fetch('/getFiles');
+    return await response.json();
+}
+export async function getAOAIService(): Promise<AOAIListResponse> {
+    const response = await fetch('/getAOAIAccounts');
     return await response.json();
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

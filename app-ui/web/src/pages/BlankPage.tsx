@@ -1,10 +1,13 @@
+/* eslint-disable no-constant-condition */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-inner-declarations */
 import { useState, useEffect } from "react";
-import { getAOAIResponse, getDeployments, getFiles } from "../api";
+import { getAOAIResponse, getAOAIService, getDeployments, getFiles } from "../api";
 import {
+  AOAIListResponse,
+  AOAISetting,
   DeploymentListResponse,
   FileListResponse,
   messages,
@@ -23,6 +26,7 @@ import {
   Text,
 } from "@fluentui/react";
 import { AOAIResults } from "../components/AOAIResult/AOAIResult";
+import { ServiceDropDown } from "../components/AOAIServiceDropdown/AOAIServiceDropdown";
 
 export default function blankPage() {
   const [deploymentListResponse, setDeploymentListResponse] =
@@ -38,6 +42,22 @@ export default function blankPage() {
   const [temperature, setTemperature] = useState<number>(0.7);
   const [topP, setTopP] = useState<number>(0);
   const [disableRunIt, setDisableRunIt] = useState<boolean>(false);
+  
+  const [selAOAIService, setSelAOAIService] = useState<AOAISetting>();
+  const [serviceList, setServiceList] = useState<AOAIListResponse>();
+
+  
+  useEffect(() => {
+    if (!serviceList) {
+      async function fetchData() {
+        const res = await getAOAIService();
+        console.log(res);
+        setServiceList(res);
+      }
+      fetchData();
+    }
+  }, [serviceList]);
+  
   useEffect(() => {
     if (!deploymentListResponse) {
       async function fetchData() {
@@ -99,6 +119,18 @@ export default function blankPage() {
         </Stack.Item>
       </Stack>
       <Stack tokens={{ childrenGap: 10, padding: 25 }}>
+      { true ? <></>: (
+      <Stack.Item>
+         <h2 style={{ color: "black" }}>
+            (ToDo){" "}
+            {selAOAIService ? (
+              <span>Service Selected: {selAOAIService?.name} ({selAOAIService?.id})</span>
+            ) : (
+              "Pick an AOAI Service"
+            )}
+          </h2>
+          <ServiceDropDown serviceList={serviceList} setAOAIService={setSelAOAIService} />
+        </Stack.Item>)}
         <Stack.Item>
           <h2 style={{ color: "black" }}>
             1){" "}
