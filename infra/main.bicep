@@ -239,7 +239,6 @@ module aoai 'app/aoai.bicep' = {
   openAICompletion: AZURE_OPENAI_COMPLETION_DEPLOYMENT
   openAICompletionModel: AZURE_OPENAI_DEPLOYMENT_MODEL
   openAICompletionVersion: AZURE_OPENAI_DEPLOYMENT_VERSION
-  openAIQuotaTokens: AZURE_OPENAI_DEPLOYMENT_MAX_TOKENS
   languageServiceName: '${AZURE_OPENAI_SERVICE}-lang-${resourceToken}'
   languageServiceLocation: 'eastus'
   }

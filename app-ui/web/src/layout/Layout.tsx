@@ -18,7 +18,7 @@ const Layout = () => {
                         <img src={openai} alt="Azure OpenAI" className={styles.headerLogo} />
                         <Add28Filled />
                         <img src={msft} alt="Azure OpenAI" className={styles.headerLogoMsft} />
-                        <h3 className={styles.headerTitle}>US Courts Demo</h3>
+                        <h3 className={styles.headerTitle}>Generic AI Demo</h3>
                     </div>
                     <nav>
                         <ul className={styles.headerNavList}>
@@ -30,6 +30,11 @@ const Layout = () => {
                             <li className={styles.headerNavLeftMargin}>
                                 <NavLink to="/summarize" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
                                 Service Summarization
+                                </NavLink>
+                            </li>
+                            <li className={styles.headerNavLeftMargin}>
+                                <NavLink to="/faces" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
+                                Faces Service
                                 </NavLink>
                             </li>
                             <li className={styles.headerNavLeftMargin}>

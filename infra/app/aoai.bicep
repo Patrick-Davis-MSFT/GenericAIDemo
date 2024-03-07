@@ -1,7 +1,7 @@
 param openAiServiceName string
 param openAICompletion string
 param openAICompletionModel string
-param openAIQuotaTokens int
+param openAIQuotaTokens int = 10
 param openAICompletionVersion string 
 param publicNetworkAccess string = 'Enabled'
 param tags object = {}

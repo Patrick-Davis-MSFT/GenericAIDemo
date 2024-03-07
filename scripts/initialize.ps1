@@ -23,9 +23,9 @@ if (-not $pythonCmd) {
 }
 
 Write-Host 'Creating python virtual environment "scripts/.venv" with ' $pythonCmd.Source
-Start-Process -FilePath ($pythonCmd).Source -ArgumentList "-m venv ./scripts/.venv" -Wait -NoNewWindow
+Start-Process -FilePath ($pythonCmd) -ArgumentList "-m venv ./scripts/.venv" -Wait -NoNewWindow
 
-$venvPythonPath = "./scripts/.venv/scripts/python.exe"
+$venvPythonPath = "./scripts/.venv/bin/python"
 if (Test-Path -Path "/usr") {
   # fallback to Linux venv path
   $venvPythonPath = "./scripts/.venv/bin/python"
