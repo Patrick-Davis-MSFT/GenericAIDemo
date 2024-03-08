@@ -26,7 +26,7 @@ export const FileDropDown: React.FC<FileDropdownProps> = ({ fileList, setFile })
         console.log(temp);
         setFileOpt(temp);
     }
-    }, [fileList, fileOpt]);
+    }, [fileList?.length, fileOpt.length]);
     return (
       <Dropdown
       placeholder="Select an option"

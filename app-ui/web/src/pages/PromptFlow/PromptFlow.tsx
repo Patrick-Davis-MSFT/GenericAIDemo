@@ -10,6 +10,7 @@ import {
     Stack,
     Text, } from '@fluentui/react';
 import { ModelDropDown } from '../../components/ModelDropDown/ModelDropDown';
+import { AOAICall } from '../../components/AOAICall/AOAICall';
 
 
 export default function promptFlow() {
@@ -19,6 +20,8 @@ export default function promptFlow() {
     const [deploymentListResponse, setDeploymentListResponse] =
       useState<DeploymentListResponse>();
     const [selectedDeployment, setSelectedDeployment] = useState<string>();
+    const [callType, setCallType] = useState<string>();
+    const [callAPI, setCallAPI] = useState<string>();
 
     useEffect(() => {
         if (!serviceList) {
@@ -86,6 +89,7 @@ export default function promptFlow() {
             setSelDep={setSelectedDeployment}
           />
         </Stack.Item>
+        <AOAICall setCallType={setCallType} setCallAPI={setCallAPI} />
         </Stack>
         </div>
     )
