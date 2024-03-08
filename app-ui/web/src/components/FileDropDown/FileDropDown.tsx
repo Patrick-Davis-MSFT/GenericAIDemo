@@ -26,6 +26,7 @@ export const FileDropDown: React.FC<FileDropdownProps> = ({ fileList, setFile })
         console.log(temp);
         setFileOpt(temp);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fileList?.length, fileOpt.length]);
     return (
       <Dropdown

@@ -10,7 +10,7 @@ import {
     Stack,
     Text, } from '@fluentui/react';
 import { ModelDropDown } from '../../components/ModelDropDown/ModelDropDown';
-import { AOAICall } from '../../components/AOAICall/AOAICall';
+import { AOAIAPI } from '../../components/AOAIAPI/AOAIAPI';
 
 
 export default function promptFlow() {
@@ -89,7 +89,7 @@ export default function promptFlow() {
             setSelDep={setSelectedDeployment}
           />
         </Stack.Item>
-        <AOAICall setCallType={setCallType} setCallAPI={setCallAPI} />
+        <AOAIAPI setCallType={setCallType} setCallAPI={setCallAPI} />
         </Stack>
         </div>
     )

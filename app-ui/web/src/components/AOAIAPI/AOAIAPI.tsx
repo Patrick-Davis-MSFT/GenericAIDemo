@@ -49,11 +49,11 @@ const callTypes: callType[] = [
   },
 ];
 
-interface AOAICallProps {
+interface AOAIAPIProps {
   setCallType: (callType: string) => void;
   setCallAPI: (callAPI: string) => void;
 }
-export const AOAICall: React.FC<AOAICallProps> = ({
+export const AOAIAPI: React.FC<AOAIAPIProps> = ({
   setCallType,
   setCallAPI,
 }) => {
