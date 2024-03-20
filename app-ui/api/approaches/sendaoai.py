@@ -56,7 +56,20 @@ class sendaoai():
     def run(self, fileName, deploymentName, messages, maxLength, function=[], code="", temperature=0.7, max_tokens=1500, top_p=1): 
         if(fileName != None):
             orgFileName = fileName.strip()
-            txtFileName = orgFileName.split(".")[0] + ".txt"
+            splitFileName = orgFileName.split(".")
+            if (splitFileName[1].startswith("txt")):
+                txtFileName = orgFileName.split(".")[0] + ".txt"
+            elif (splitFileName[1].startswith("csv")):
+                txtFileName = orgFileName.split(".")[0] + ".csv"
+            elif (splitFileName[1].startswith("tsv")):
+                txtFileName = orgFileName.split(".")[0] + ".tsv"
+            elif (splitFileName[1].startswith("json")):
+                txtFileName = orgFileName.split(".")[0] + ".json"
+            elif (splitFileName[1].startswith("md")):
+                txtFileName = orgFileName.split(".")[0] + ".md"
+            else:
+                txtFileName = orgFileName.split(".")[0] + ".txt"
+            
 
             #Get file Text
             blob_service_client = BlobServiceClient(account_url=f"https://{self.storageAcct}.blob.core.windows.net", credential=self.defaultCreds)

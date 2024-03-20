@@ -18,8 +18,20 @@ class summary():
     def run(self, fileName,  docLength, sentenceCount, useAbstractive): 
     
         orgFileName = fileName.strip()
-        txtFileName = orgFileName.split(".")[0] + ".txt"
-    
+        splitFileName = orgFileName.split(".")
+        if (splitFileName[1].startswith("txt")):
+            txtFileName = orgFileName.split(".")[0] + ".txt"
+        elif (splitFileName[1].startswith("csv")):
+            txtFileName = orgFileName.split(".")[0] + ".csv"
+        elif (splitFileName[1].startswith("tsv")):
+            txtFileName = orgFileName.split(".")[0] + ".tsv"
+        elif (splitFileName[1].startswith("json")):
+            txtFileName = orgFileName.split(".")[0] + ".json"
+        elif (splitFileName[1].startswith("md")):
+            txtFileName = orgFileName.split(".")[0] + ".md"
+        else:
+            txtFileName = orgFileName.split(".")[0] + ".txt"
+
         #Get file Text
         blob_service_client = BlobServiceClient(account_url=f"https://{self.storageAcct}.blob.core.windows.net", credential=self.defaultCreds)
         container_client = blob_service_client.get_container_client(self.txtContainer)
