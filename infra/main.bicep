@@ -65,6 +65,7 @@ module storage './core/storage/storage-account.bicep' = {
   params: {
     location: location
     name: 'store${resourceToken}'
+    keyVaultName: keyVault.outputs.name
     tags: tags
     sku: {
       name: 'Standard_LRS'

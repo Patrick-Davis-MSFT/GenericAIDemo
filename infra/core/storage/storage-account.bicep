@@ -26,6 +26,11 @@ param networkAcls object = {
 @allowed([ 'Enabled', 'Disabled' ])
 param publicNetworkAccess string = 'Enabled'
 param sku object = { name: 'Standard_LRS' }
+param keyVaultName string
+
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+  name: keyVaultName
+}
 
 resource storage 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   name: name
@@ -59,6 +64,21 @@ resource storage 'Microsoft.Storage/storageAccounts@2022-05-01' = {
     }]
   }
 }
+
+// Get the storage account keys
+var storageKeys = listKeys(storage.id, storage.apiVersion)
+
+// Get the connection string
+var connectionString = 'DefaultEndpointsProtocol=https;AccountName=${storage.name};AccountKey=${storageKeys.keys[0].value};EndpointSuffix=core.windows.net'
+
+resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  name: '${keyVault.name}/storageConnectionString'
+  properties: {
+    value: connectionString
+    contentType: 'text/plain'
+  }
+}
+
 
 output name string = storage.name
 output primaryEndpoints object = storage.properties.primaryEndpoints

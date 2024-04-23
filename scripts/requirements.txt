@@ -11,4 +11,5 @@ uuid==1.30
 azure.core
 azure.cosmos
 azure.keyvault
+azure.storage.blob
 pymongo == 3.12.0

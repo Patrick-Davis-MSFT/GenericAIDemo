@@ -189,7 +189,7 @@ export default function blankPage() {
                 label="Document Cutoff Length"
                 value={docLength}
                 min={1000}
-                max={100000}
+                max={125000}
                 step={1000}
                 defaultValue={10000}
                 onChange={sliderOnChange}
