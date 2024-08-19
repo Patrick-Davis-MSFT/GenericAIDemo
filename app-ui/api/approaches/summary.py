@@ -8,12 +8,13 @@ import chardet
 
 
 class summary():
-    def __init__(self, defaultCreds, fileContainer, txtContainer, storageAcct, lang_endpoint):
+    def __init__(self, defaultCreds, fileContainer, txtContainer, storageAcct, lang_endpoint, storageAcctSuffix=".blob.core.windows.net"):
         self.defaultCreds = defaultCreds
         self.fileContainer = fileContainer
         self.txtContainer = txtContainer
         self.storageAcct = storageAcct
         self.lang_endpoint = lang_endpoint
+        self.storageAcctSuffix = storageAcctSuffix
 
     def run(self, fileName,  docLength, sentenceCount, useAbstractive): 
     
@@ -33,7 +34,7 @@ class summary():
             txtFileName = orgFileName.split(".")[0] + ".txt"
 
         #Get file Text
-        blob_service_client = BlobServiceClient(account_url=f"https://{self.storageAcct}.blob.core.windows.net", credential=self.defaultCreds)
+        blob_service_client = BlobServiceClient(account_url=f"https://{self.storageAcct}{self.storageAcctSuffix}", credential=self.defaultCreds)
         container_client = blob_service_client.get_container_client(self.txtContainer)
         blob_client = container_client.get_blob_client(txtFileName)
         fileText = blob_client.download_blob().readall().decode('utf-8')

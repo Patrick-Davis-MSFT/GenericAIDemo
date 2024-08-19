@@ -4,13 +4,13 @@ param tags object = {}
 param webAppName string
 param webAppPlanName string
 param applicationInsightsName string
-param cosmosCS string
+param cosmosCS string = 'nothing'
 param keyVaultName string
 param rssURI string = 'https://www.cisa.gov/cybersecurity-advisories/ics-advisories.xml'
-param databaseName string
-param endpoint string
-param aboutcollection string
-param alertcollection string
+param databaseName string = 'nothing'
+param endpoint string = 'nothing'
+param aboutcollection string = 'about'
+param alertcollection string = 'alert'
 
 param AZURE_OPENAI_SERVICE string
 param AZURE_OPENAI_ENDPOINT string
@@ -19,7 +19,7 @@ param AZURE_OPENAI_DEPLOYMENT_MODEL string
 param AZURE_OPENAI_DEPLOYMENT_MAX_TOKENS int
 param AZURE_OPENAI_RESOURCE_GROUP string
 
-param AZURE_SEARCH_NAME string
+param AZURE_SEARCH_NAME string = 'nothing'
 param AZURE_SEARCH_INDEX_NAME string
 
 param sbNamespace string

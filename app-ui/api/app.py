@@ -12,12 +12,13 @@ import base64
 import html
 from io import BytesIO
 from flask import Flask, request, jsonify, send_file, abort, Response
-from azure.identity import DefaultAzureCredential
+from azure.identity import DefaultAzureCredential, AzureAuthorityHosts
 from approaches.versioncheck import versionCheck
 from approaches.sendaoai import sendaoai
 from approaches.summary import summary
 from azure.mgmt.cognitiveservices import CognitiveServicesManagementClient
 from azure.storage.blob import BlobServiceClient
+# from msrestazure.azure_cloud import AZURE_GOVERNMENT_CLOUD
 
 # Replace these with your own values, either in environment variables or directly here
 AZURE_COSMOS_ENDPOINT = os.environ.get("AZURE_COSMOS_ENDPOINT", "") or "AZURE_COSMOS_ENDPOINT"
@@ -38,13 +39,14 @@ AZURE_STORAGE_CONTAINER_UPLOAD = os.environ.get("AZURE_STORAGE_CONTAINER_UPLOAD"
 AZURE_STORAGE_CONTAINER_PROCESSED = os.environ.get("AZURE_STORAGE_CONTAINER_PROCESSED", "processed") or "AZURE_STORAGE_CONTAINER_PROCESSED"
 AZURE_STORAGE_CONTAINER_TEXT = os.environ.get("AZURE_STORAGE_CONTAINER_TEXT", "text") or "AZURE_STORAGE_CONTAINER_TEXT"
 AZURE_LANGUAGE_SERVICE_ENDPOINT = os.environ.get("AZURE_LANGUAGE_SERVICE_ENDPOINT", "") or "AZURE_LANGUAGE_SERVICE_ENDPOINT"
+AZURE_STORAGE_ENDPOINT_SUFFIX = os.environ.get("AZURE_STORAGE_ENDPOINT_SUFFIX", ".blob.core.windows.net") or "AZURE_STORAGE_ENDPOINT_SUFFIX"
 # Use the current user identity to authenticate with Azure OpenAI, Cognitive Search and Blob Storage (no secrets needed, 
 # just use 'az login' locally, and managed identity when deployed on Azure). If you need to use keys, use separate AzureKeyCredential instances with the 
 # keys for each service
 # If you encounter a blocking error during a DefaultAzureCredntial resolution, you can exclude the problematic credential by using a parameter (ex. exclude_shared_token_cache_credential=True)
-#logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 #azure_credential = DefaultAzureCredential(exclude_shared_token_cache_credential = True, logging_enable=True)
-azure_credential = DefaultAzureCredential(exclude_shared_token_cache_credential = True)
+azure_credential = DefaultAzureCredential(authority=AzureAuthorityHosts.AZURE_GOVERNMENT)
 
 
 # Approach to get 
@@ -57,12 +59,14 @@ aoai_approaches = {
                             AZURE_STORAGE_CONTAINER_PROCESSED,
                             AZURE_STORAGE_CONTAINER_TEXT,
                             AZURE_STORAGE_ACCOUNT,
-                            AZURE_OPENAI_ENDPOINT),
+                            AZURE_OPENAI_ENDPOINT,
+                            AZURE_STORAGE_ENDPOINT_SUFFIX),
     "summary": summary(azure_credential,
                             AZURE_STORAGE_CONTAINER_PROCESSED,
                             AZURE_STORAGE_CONTAINER_TEXT,
                             AZURE_STORAGE_ACCOUNT,
-                            AZURE_LANGUAGE_SERVICE_ENDPOINT)
+                            AZURE_LANGUAGE_SERVICE_ENDPOINT,
+                            AZURE_STORAGE_ENDPOINT_SUFFIX)
 }
 
 
@@ -91,9 +95,12 @@ def about():
 @app.route("/getAOAIAccounts")
 def aoaiAccounts():
     try:
+        credential = DefaultAzureCredential(authority=AzureAuthorityHosts.AZURE_GOVERNMENT, logging_enable=True,)
+        base_url = "https://management.usgovcloudapi.net"
         client = CognitiveServicesManagementClient(
-            credential=DefaultAzureCredential(),
+            credential=credential,
             subscription_id=AZURE_SUBSCRIPTION_ID,
+            base_url=base_url
         )
         r = client.accounts.list()
         retvalue = []
@@ -124,10 +131,12 @@ def getDeploymentInfo():
                 tmpAOAIService = req.get("account_name")
         except:
             logging.info("No request body provided. Using Defaults")
-
+        credential = DefaultAzureCredential(authority=AzureAuthorityHosts.AZURE_GOVERNMENT)
+        base_url = "https://management.usgovcloudapi.net"
         client = CognitiveServicesManagementClient(
-            credential=DefaultAzureCredential(),
+            credential=credential,
             subscription_id=AZURE_SUBSCRIPTION_ID,
+            base_url="https://management.usgovcloudapi.net"
         )
         r = client.deployments.list(
             resource_group_name=tmpAOAIRg,
@@ -148,7 +157,7 @@ def getDeploymentInfo():
 @app.route("/getFiles")
 def getFiles():
     try:
-        blob_service_client = BlobServiceClient(account_url=f"https://{AZURE_STORAGE_ACCOUNT}.blob.core.windows.net", credential=azure_credential)
+        blob_service_client = BlobServiceClient(account_url=f"https://{AZURE_STORAGE_ACCOUNT}{AZURE_STORAGE_ENDPOINT_SUFFIX}", credential=azure_credential)
         container_client = blob_service_client.get_container_client(AZURE_STORAGE_CONTAINER_PROCESSED)
         blobList = container_client.list_blobs()
         res = []

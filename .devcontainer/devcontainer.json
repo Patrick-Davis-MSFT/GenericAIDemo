@@ -5,7 +5,7 @@
         "ghcr.io/devcontainers/features/docker-in-docker:2": {
         },
         "ghcr.io/devcontainers/features/node:1": {
-            "version": "16",
+            "version": "18",
             "nodeGypDependencies": false
         },
         "ghcr.io/azure/azure-dev/azd:latest": {},
@@ -27,7 +27,8 @@
                 "ms-vscode.vscode-node-azure-pack",
                 "ms-vscode.powershell",
                 "ms-python.python",
-                "ms-python.vscode-pylance"
+                "ms-python.vscode-pylance",
+                "rangav.vscode-thunder-client"
             ]
         }
     },
@@ -37,6 +38,6 @@
     ],
     "postCreateCommand": "",
     "hostRequirements": {
-        "memory": "8gb"
+        "memory": "16gb"
     }
 }

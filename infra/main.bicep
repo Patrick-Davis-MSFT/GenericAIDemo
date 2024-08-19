@@ -99,11 +99,11 @@ module web './app/web.bicep' = {
     appServicePlanId: appServicePlan.outputs.id
     keyVaultName: keyVault.outputs.name
     appSettings: {
-      AZURE_COSMOS_CONNECTION_STRING: '@Microsoft.KeyVault(SecretUri=${cosmos.outputs.connectionStringKey})'
-      AZURE_COSMOS_DATABASE_NAME: cosmos.outputs.databaseName
-      AZURE_COSMOS_ENDPOINT: cosmos.outputs.endpoint
-      AZURE_COSMOS_ABOUT_COLLECTION: cosmos.outputs.aboutcollection
-      AZURE_COSMOS_ALERT_COLLECTION: cosmos.outputs.alertcollection
+      //AZURE_COSMOS_CONNECTION_STRING: '@Microsoft.KeyVault(SecretUri=${cosmos.outputs.connectionStringKey})'
+      //AZURE_COSMOS_DATABASE_NAME: cosmos.outputs.databaseName
+      //AZURE_COSMOS_ENDPOINT: cosmos.outputs.endpoint
+      //AZURE_COSMOS_ABOUT_COLLECTION: cosmos.outputs.aboutcollection
+      //AZURE_COSMOS_ALERT_COLLECTION: cosmos.outputs.alertcollection
       VITE_APPLICATIONINSIGHTS_CONNECTION_STRING: '@Microsoft.KeyVault(SecretUri=${kvAppIn.outputs.kvSecretId})'
       AZURE_STORAGE_ACCOUNT: storage.name
       AZURE_OPENAI_SERVICE: aoai.outputs.AZURE_OPENAI_SERVICE
@@ -143,7 +143,7 @@ module apiKeyVaultAccess './core/security/keyvault-access.bicep' = {
   }
 }
 
-
+/*
 // The application database
 module cosmos './app/db.bicep' = {
   name: 'cosmos'
@@ -156,7 +156,7 @@ module cosmos './app/db.bicep' = {
     keyVaultName: keyVault.outputs.name
   }
 }
-
+*/
 // Create an App Service Plan to group applications under the same payment plan and SKU
 module appServicePlan './core/host/appserviceplan.bicep' = {
   name: 'appserviceplan'
@@ -181,18 +181,18 @@ module pipeline './app/pipelines.bicep' = {
     webAppName: web.outputs.SERVICE_WEB_NAME
     webAppPlanName: appServicePlan.outputs.name
     applicationInsightsName: monitoring.outputs.applicationInsightsName
-    cosmosCS: '@Microsoft.KeyVault(SecretUri=${cosmos.outputs.connectionStringKey})'
+    //cosmosCS: '@Microsoft.KeyVault(SecretUri=${cosmos.outputs.connectionStringKey})'
     keyVaultName: keyVault.outputs.name
-    databaseName: cosmos.outputs.databaseName
-    endpoint: cosmos.outputs.endpoint
-    aboutcollection: cosmos.outputs.aboutcollection
-    alertcollection: cosmos.outputs.alertcollection
+    //databaseName: cosmos.outputs.databaseName
+    //endpoint: cosmos.outputs.endpoint
+    //aboutcollection: cosmos.outputs.aboutcollection
+    //alertcollection: cosmos.outputs.alertcollection
     AZURE_OPENAI_SERVICE: aoai.outputs.AZURE_OPENAI_SERVICE
     AZURE_OPENAI_ENDPOINT: aoai.outputs.AZURE_OPENAI_ENDPOINT
     AZURE_OPENAI_COMPLETION_DEPLOYMENT: aoai.outputs.AZURE_OPENAI_COMPLETION_DEPLOYMENT
     AZURE_OPENAI_DEPLOYMENT_MODEL: aoai.outputs.AZURE_OPENAI_DEPLOYMENT_MODEL
     AZURE_OPENAI_DEPLOYMENT_MAX_TOKENS: AZURE_OPENAI_DEPLOYMENT_MAX_TOKENS
-    AZURE_SEARCH_NAME: search.outputs.AZURE_SEARCH_NAME
+    //AZURE_SEARCH_NAME: search.outputs.AZURE_SEARCH_NAME
     AZURE_SEARCH_INDEX_NAME: AZURE_SEARCH_INDEX_NAME
     AZURE_STORAGE_ACCOUNT: storage.name
     AZURE_OPENAI_RESOURCE_GROUP: azureOpenAIResourceGroup
@@ -218,7 +218,7 @@ module pipeline './app/pipelines.bicep' = {
     ]
   }
 }
-
+/*
 module search './app/search.bicep' = {
   name: 'ai-search'
   scope: rg
@@ -229,7 +229,7 @@ module search './app/search.bicep' = {
     keyVaultName: keyVault.outputs.name
   }
 }
-
+*/
 module aoai 'app/aoai.bicep' = {
   name: 'aoai-completion'
   scope: rg
@@ -241,7 +241,7 @@ module aoai 'app/aoai.bicep' = {
   openAICompletionModel: AZURE_OPENAI_DEPLOYMENT_MODEL
   openAICompletionVersion: AZURE_OPENAI_DEPLOYMENT_VERSION
   languageServiceName: '${AZURE_OPENAI_SERVICE}-lang-${resourceToken}'
-  languageServiceLocation: 'eastus'
+  languageServiceLocation: 'usgovvirginia'
   }
 }
 
@@ -307,11 +307,11 @@ output AZURE_TENANT_ID string = tenant().tenantId
 output AZURE_RESOURCE_GROUP string = rg.name
 
 // Data outputs
-output AZURE_COSMOS_DATABASE_NAME string = cosmos.outputs.databaseName
-output AZURE_COSMOS_ENDPOINT string = cosmos.outputs.endpoint
-output AZURE_COSMOS_ABOUT_COLLECTION string = cosmos.outputs.aboutcollection
-output AZURE_COSMOS_ALERT_COLLECTION string = cosmos.outputs.alertcollection
-output AZURE_COSMOS_CONNECTION_STRING_KEY string = substring(cosmos.outputs.connectionStringKey, indexOf(cosmos.outputs.connectionStringKey, 'secrets/')+8)
+//output AZURE_COSMOS_DATABASE_NAME string = cosmos.outputs.databaseName
+//output AZURE_COSMOS_ENDPOINT string = cosmos.outputs.endpoint
+//output AZURE_COSMOS_ABOUT_COLLECTION string = cosmos.outputs.aboutcollection
+//output AZURE_COSMOS_ALERT_COLLECTION string = cosmos.outputs.alertcollection
+//output AZURE_COSMOS_CONNECTION_STRING_KEY string = substring(cosmos.outputs.connectionStringKey, indexOf(cosmos.outputs.connectionStringKey, 'secrets/')+8)
 
 // App outputs
 output AZURE_KEY_VAULT_ENDPOINT string = keyVault.outputs.endpoint

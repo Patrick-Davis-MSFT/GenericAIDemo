@@ -44,17 +44,17 @@ Write-Host "Restoring api python packages"
 Write-Host ""
 
 Set-Location api
-$venvPythonPath = "./api_env/scripts/python.exe"
+$venvPythonPath = "./api_env/scripts/python3"
 if (Test-Path -Path "/usr") {
   # fallback to Linux venv path
-  $venvPythonPath = "./api_env/bin/python"
+  $venvPythonPath = "./api_env/bin/python3"
 }
-
+Write-Host $venvPythonPath
 Start-Process -FilePath $venvPythonPath -ArgumentList "-m pip install -r requirements.txt" -Wait -NoNewWindow
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Failed to restore api python packages"
-    exit $LASTEXITCODE
-}
+#if ($LASTEXITCODE -ne 0) {
+#    Write-Host "Failed to restore api python packages"
+#    exit $LASTEXITCODE
+#}
 
 Write-Host ""
 Write-Host "Restoring web npm packages"
@@ -67,10 +67,13 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host ""
-Write-Host "Starting web"
+Write-Host "Start web on your own"
 Write-Host ""
-Start-Process npm -ArgumentList "run dev"
+#Start-Process npm -ArgumentList "run dev"
 
+Write-Host ""
+Write-Host "Start api"
+Write-Host ""
 Set-Location ../api
 Start-Process -FilePath $venvPythonPath -ArgumentList "-m flask run --port=5000 --reload --debug" -Wait -NoNewWindow
 
