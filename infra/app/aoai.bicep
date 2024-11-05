@@ -13,6 +13,7 @@ param openAILocation string = 'eastus'
 param languageServiceName string
 param languageServiceLocation string
 
+param multiserviceAccountName string
 
 resource openAiAccount 'Microsoft.CognitiveServices/accounts@2023-05-01'  =   {
   name: openAiServiceName
@@ -46,6 +47,23 @@ resource languageService 'Microsoft.CognitiveServices/accounts@2023-10-01-previe
     }
   }
 }
+resource aiMultiserviceAccount 'Microsoft.CognitiveServices/accounts@2024-06-01-preview' = {
+  name: multiserviceAccountName
+  location: openAILocation
+  tags: tags
+  kind: 'CognitiveServices'
+  properties: {
+    customSubDomainName: multiserviceAccountName
+    publicNetworkAccess: publicNetworkAccess
+    networkAcls: {
+      defaultAction: 'Allow'
+    }
+  }
+  sku: {
+    name: 'S0'
+  }
+}
+
 resource CompDeploy 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
   parent: openAiAccount
   name: openAICompletion
@@ -74,3 +92,6 @@ output AZURE_OPENAI_DEPLOYMENT_VERSION string = openAICompletionVersion
 output AZURE_OPENAI_QUOTA_TOKENS int = openAIQuotaTokens
 output AZURE_LANGUAGE_SERVICE_NAME string = languageService.name
 output AZURE_LANGUAGE_SERVICE_ENDPOINT string = languageService.properties.endpoint
+output AZURE_MULTI_AI_SERVICE_NAME string = aiMultiserviceAccount.name
+output AZURE_MULTI_AI_SERVICE_ENDPOINT string = aiMultiserviceAccount.properties.endpoint
+ 

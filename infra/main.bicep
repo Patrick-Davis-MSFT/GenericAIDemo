@@ -196,6 +196,8 @@ module pipeline './app/pipelines.bicep' = {
     AZURE_SEARCH_INDEX_NAME: AZURE_SEARCH_INDEX_NAME
     AZURE_STORAGE_ACCOUNT: storage.name
     AZURE_OPENAI_RESOURCE_GROUP: azureOpenAIResourceGroup
+    AZURE_MULTI_AI_SERVICE_NAME: aoai.outputs.AZURE_MULTI_AI_SERVICE_NAME
+    AZURE_MULTI_AI_SERVICE_ENDPOINT: aoai.outputs.AZURE_MULTI_AI_SERVICE_ENDPOINT
     sbNamespace: 'sb-${resourceToken}'
     queueName: 'htmlLoaded'
     storeContainers: [
@@ -242,6 +244,7 @@ module aoai 'app/aoai.bicep' = {
   openAICompletionVersion: AZURE_OPENAI_DEPLOYMENT_VERSION
   languageServiceName: '${AZURE_OPENAI_SERVICE}-lang-${resourceToken}'
   languageServiceLocation: 'eastus'
+  multiserviceAccountName: 'mai-${resourceToken}'
   }
 }
 
@@ -254,6 +257,7 @@ module openAiRoleWebUser './core/security/role.bicep' = {
     principalType: 'ServicePrincipal'
   }
 }
+
 
 module AiRoleWebUser './core/security/role.bicep' = {
   name: 'ai-role-user'
@@ -334,3 +338,7 @@ output AZURE_OPENAI_ENDPOINT string = aoai.outputs.AZURE_OPENAI_ENDPOINT
 output AZURE_LANGUAGE_SERVICE_NAME string = aoai.outputs.AZURE_LANGUAGE_SERVICE_NAME
 output AZURE_LANGUAGE_SERVICE_ENDPOINT string = aoai.outputs.AZURE_LANGUAGE_SERVICE_ENDPOINT
 output AZURE_OPENAI_RESOURCE_GROUP string = azureOpenAIResourceGroup
+
+// AI Multi Account
+output AZURE_MULTI_AI_SERVICE_NAME string = aoai.outputs.AZURE_MULTI_AI_SERVICE_NAME
+output AZURE_MULTI_AI_SERVICE_ENDPOINT string = aoai.outputs.AZURE_MULTI_AI_SERVICE_ENDPOINT

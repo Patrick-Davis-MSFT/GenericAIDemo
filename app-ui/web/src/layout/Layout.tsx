@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
@@ -33,10 +34,20 @@ const Layout = () => {
                                 </NavLink>
                             </li>
                             <li className={styles.headerNavLeftMargin}>
+                                <NavLink to="/DocExplainer" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
+                                Form Explainer
+                                </NavLink>
+                            </li>
+                            <li className={styles.headerNavLeftMargin}>
+                                <NavLink to="/docTranslate" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
+                                Document Translator
+                                </NavLink>
+                            </li>
+                            ({ (true) ? null : (<li className={styles.headerNavLeftMargin}>
                                 <NavLink to="/promptflow" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
                                 Prompt Flow
                                 </NavLink>
-                            </li>
+                            </li> )})
                             <li className={styles.headerNavLeftMargin}>
                                 <NavLink to="/about" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
                                 About
