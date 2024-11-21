@@ -62,6 +62,9 @@ resource aiMultiserviceAccount 'Microsoft.CognitiveServices/accounts@2024-06-01-
   sku: {
     name: 'S0'
   }
+  identity: {
+    type: 'SystemAssigned'
+  }
 }
 
 resource CompDeploy 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
@@ -94,4 +97,5 @@ output AZURE_LANGUAGE_SERVICE_NAME string = languageService.name
 output AZURE_LANGUAGE_SERVICE_ENDPOINT string = languageService.properties.endpoint
 output AZURE_MULTI_AI_SERVICE_NAME string = aiMultiserviceAccount.name
 output AZURE_MULTI_AI_SERVICE_ENDPOINT string = aiMultiserviceAccount.properties.endpoint
+output AZURE_MULTI_AI_SERVICE_PRINCIPAL string = aiMultiserviceAccount.identity.principalId
  

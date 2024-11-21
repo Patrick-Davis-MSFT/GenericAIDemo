@@ -7,9 +7,8 @@ from azure.identity import DefaultAzureCredential
 
 
 class sendaoai():
-    def __init__(self, defaultCreds, fileContainer, txtContainer, storageAcct, aoai_endpoint):
+    def __init__(self, defaultCreds, txtContainer, storageAcct, aoai_endpoint):
         self.defaultCreds = defaultCreds
-        self.fileContainer = fileContainer
         self.txtContainer = txtContainer
         self.storageAcct = storageAcct
         self.aoai_endpoint = aoai_endpoint

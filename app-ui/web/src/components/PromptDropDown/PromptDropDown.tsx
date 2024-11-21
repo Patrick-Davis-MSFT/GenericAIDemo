@@ -12,15 +12,16 @@ interface prompt {
   messages: messages;
 }
 
-type promptArray = prompt[];
+export type promptArray = prompt[];
 
 interface PromptDropdownProps {
   setPrompts: (promptId: string | number) => void;
   selMessages?: messages;
   setSelMessages: (messages: messages) => void;
+  inPromptList?: promptArray
 }
 
-const promptList: promptArray = [
+const defaultPromptList: promptArray = [
   {
     id: 1,
     name: "Text Generation",
@@ -104,11 +105,13 @@ const promptList: promptArray = [
 export const PromptDropDown: React.FC<PromptDropdownProps> = ({
   setPrompts,
   setSelMessages,
+  inPromptList,
 }) => {
   const [promptOpt, setPromptOpt] = useState<IDropdownOption[]>([]); // Update the type of modelOpt
   const [selectedMessages, setSelectedMessages] = useState<messages>([]);
   const [sysMsg, setSysMsg] = useState<string>();
   const [usrMsg, setUsrMsg] = useState<string>();
+  const [promptList, setPromptList] = useState<promptArray>(inPromptList? inPromptList: defaultPromptList);
 
   const ddSelectPrompt = (option?: IDropdownOption) => {
     if (option && option.key) {
@@ -152,6 +155,7 @@ export const PromptDropDown: React.FC<PromptDropdownProps> = ({
   };
 
   useEffect(() => {
+
     if ((!promptOpt || promptOpt.length == 0) && promptList) {
       const temp = promptList.map((i) => {
         return { key: i.id, text: i.name };
@@ -159,7 +163,7 @@ export const PromptDropDown: React.FC<PromptDropdownProps> = ({
       console.log(temp);
       setPromptOpt(temp);
     }
-  }, [promptOpt]);
+  }, [promptOpt, promptList]);
 
   return (
     <Stack>

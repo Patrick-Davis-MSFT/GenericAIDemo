@@ -15,6 +15,7 @@ import BlankPage from './pages/BlankPage';
 import About from './pages/About/About';
 import Summarize from './pages/Summarize/Summarize';
 import PromptFlow from './pages/PromptFlow/PromptFlow';
+import DocExplainer from './pages/DocExplainer/DocExplainer';
 import NoPage from './pages/NoPage';
 
 const AppInsight_CS = import.meta.env.VITE_APPLICATIONINSIGHTS_CONNECTION_STRING
@@ -46,6 +47,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/summarize" element={<Summarize />} />
             <Route path="/promptflow" element={<PromptFlow />} />
+            <Route path="/docexplainer" element={<DocExplainer />} />
             <Route path="*" element={<NoPage />} />
         </Route>
     </Routes>

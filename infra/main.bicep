@@ -115,6 +115,8 @@ module web './app/web.bicep' = {
       AZURE_LANGUAGE_SERVICE_NAME: aoai.outputs.AZURE_LANGUAGE_SERVICE_NAME
       AZURE_LANGUAGE_SERVICE_ENDPOINT: aoai.outputs.AZURE_LANGUAGE_SERVICE_ENDPOINT
       AZURE_OPENAI_RESOURCE_GROUP: azureOpenAIResourceGroup
+      AZURE_MULTI_AI_SERVICE_NAME: aoai.outputs.AZURE_MULTI_AI_SERVICE_NAME
+      AZURE_MULTI_AI_SERVICE_ENDPOINT: aoai.outputs.AZURE_MULTI_AI_SERVICE_ENDPOINT
       AZURE_RESOURCE_GROUP: rg.name
       AZURE_SUBSCRIPTION_ID: subscription().subscriptionId
     }
@@ -265,6 +267,25 @@ module AiRoleWebUser './core/security/role.bicep' = {
   params: {
     principalId: web.outputs.SERVICE_WEB_IDENTITY_PRINCIPAL_ID
     roleDefinitionId: 'a97b65f3-24c7-4388-baec-2e87135dc908'
+    principalType: 'ServicePrincipal'
+  }
+}
+
+module MAiRoleUser './core/security/role.bicep' = {
+  name: 'mai-role-user'
+  scope: rg
+  params: {
+    principalId: aoai.outputs.AZURE_MULTI_AI_SERVICE_PRINCIPAL
+    roleDefinitionId: 'a97b65f3-24c7-4388-baec-2e87135dc908'
+    principalType: 'ServicePrincipal'
+  }
+}
+module MAiRoleStorageUser './core/security/role.bicep' = {
+  name: 'mai-role-user-storage'
+  scope: rg
+  params: {
+    principalId: aoai.outputs.AZURE_MULTI_AI_SERVICE_PRINCIPAL
+    roleDefinitionId: 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
     principalType: 'ServicePrincipal'
   }
 }

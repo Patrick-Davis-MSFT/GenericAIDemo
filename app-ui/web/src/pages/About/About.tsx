@@ -1,3 +1,4 @@
+/* eslint-disable no-inner-declarations */
 import { useState, useEffect } from 'react';
 import { About } from "../../api/models";
 import { getAbout } from '../../api';

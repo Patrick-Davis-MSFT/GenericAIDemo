@@ -189,9 +189,9 @@ export default function blankPage() {
                 label="Document Cutoff Length"
                 value={docLength}
                 min={1000}
-                max={125000}
+                max={128000}
                 step={1000}
-                defaultValue={10000}
+                defaultValue={128000}
                 onChange={sliderOnChange}
                 showValue
                 snapToStep
@@ -206,9 +206,9 @@ export default function blankPage() {
                 label="Max Tokens"
                 value={maxTokens}
                 min={100}
-                max={32000}
+                max={128000}
                 step={100}
-                defaultValue={4000}
+                defaultValue={128000}
                 onChange={onChangeMaxTokens}
                 showValue
                 snapToStep

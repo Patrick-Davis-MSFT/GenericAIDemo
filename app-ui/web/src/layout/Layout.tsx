@@ -43,11 +43,11 @@ const Layout = () => {
                                 Document Translator
                                 </NavLink>
                             </li>
-                            ({ (true) ? null : (<li className={styles.headerNavLeftMargin}>
+                            { (true) ? null : (<li className={styles.headerNavLeftMargin}>
                                 <NavLink to="/promptflow" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
                                 Prompt Flow
                                 </NavLink>
-                            </li> )})
+                            </li> )}
                             <li className={styles.headerNavLeftMargin}>
                                 <NavLink to="/about" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
                                 About

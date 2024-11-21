@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {AOAIListResponse, About, DeploymentListResponse, FileListResponse, messages } from './models';
 
 export async function getAbout(): Promise<About> {
@@ -24,8 +25,28 @@ export async function getDeploymentsWService(serviceRg: string, serviceName: str
     return await response.json();
 }
 
+export async function uploadFile(file: File): Promise<void> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch('/uploadFile', {
+        method: 'POST',
+        body: formData,
+    });
+
+    if (!response.ok) {
+        throw new Error('File upload failed');
+    }
+}
+
 export async function getFiles(): Promise<FileListResponse> {
     const response = await fetch('/getFiles');
+    return await response.json();
+}
+
+
+export async function getUploadedFiles(): Promise<FileListResponse> {
+    const response = await fetch('/getUploadedFiles');
     return await response.json();
 }
 export async function getAOAIService(): Promise<AOAIListResponse> {
@@ -52,6 +73,27 @@ export async function getAOAIResponse(fileName: string, deploymentName: string, 
         });
     return await response.json();
 }
+
+export async function getAOAIRawDocResponse(fileName: string, deploymentName: string, messages: messages, docLength: number, maxTokens:number, temperature:number, topP:number): Promise<any> {
+    console.log("getAOAIRawDocResponse");
+    const response = await fetch('/getAOAIRawDocResponse', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                fileName: fileName,
+                deploymentName: deploymentName,
+                messages: messages,
+                docLength: docLength,
+                maxTokens: maxTokens,
+                temperature: temperature,
+                topP: topP
+                })
+        });
+    return await response.json();
+}
+
 
 export async function getSummary (selectedFile: string, docLength: number, sentenceCount:number, useAbstractive: boolean) {
     const response = await fetch('/getSummary', {

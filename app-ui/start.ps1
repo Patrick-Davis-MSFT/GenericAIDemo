@@ -69,7 +69,7 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host ""
 Write-Host "Starting web"
 Write-Host ""
-Start-Process npm -ArgumentList "run dev"
+##Start-Process npm -ArgumentList "run dev"
 
 Set-Location ../api
 Start-Process -FilePath $venvPythonPath -ArgumentList "-m flask run --port=5000 --reload --debug" -Wait -NoNewWindow
